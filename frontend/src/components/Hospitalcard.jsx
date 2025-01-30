@@ -7,6 +7,12 @@ function Hospitalcard({ hospital }) {
     e.preventDefault();
 
     const user = JSON.parse(localStorage.getItem('user'));
+    
+    if (!user) {
+      toast.error("You need to login first");
+      return;
+    }
+
     const token = user?.token;
 
     try {
@@ -45,9 +51,9 @@ function Hospitalcard({ hospital }) {
   </div>
   <button
     onClick={handleClick}
-    className='mt-6 w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105'
+    className='mt-6 w-full bg-[#231F20] text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105'
   >
-    Book Appointment
+    Request for appointment
   </button>
 </div>
   );

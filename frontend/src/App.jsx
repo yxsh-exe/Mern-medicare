@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import HospitalRegister from "./pages/HospitalRegister";
 import HospitalList from "./pages/HospitalList";
 import { useAdminAuthContext } from "./hooks/useAdminAuthContext";
+import Insurance from "./pages/Insurance";
 
 
 function App() {
@@ -32,6 +33,8 @@ function App() {
       <Route path="/" element={<Home/>}/>
 
       <Route path="/hospitals" element={<Hospitals/>}/>
+
+      <Route path="/insurance" element={<Insurance/>}/>
 
       <Route path="/login" element={user? <Home/>:<LoginForm/>}/>
 

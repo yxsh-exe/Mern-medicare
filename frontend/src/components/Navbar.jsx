@@ -39,7 +39,8 @@ function Navbar() {
             </div>
             <div className="rightnav mr-10 flex gap-11 ">
                 {!hospital && !admin?<>
-               <Link className='font-normal hover:underline' to={'/hospitals'}>Hospitals</Link>
+                <Link className='font-normal hover:underline' to={'/insurance'}>Insurance</Link>
+                <Link className='font-normal hover:underline' to={'/hospitals'}>Hospitals</Link>
                 </>
                 :
                 <>
