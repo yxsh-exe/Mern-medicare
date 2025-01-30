@@ -33,13 +33,13 @@ function Navbar() {
   return (
    <>
     <nav>
-        <div className='flex text-white font-semibold text-xl bg-blue-300 p-4 justify-between'>
+        <div className='flex text-white font-semibold text-xl bg-[#231F20] p-5 px-10 justify-between tracking-widest'>
             <div className="leftnav ">
-                <h1 onClick={handleClick} className='text-blue-700 cursor-pointer'>MediCare</h1>
+                <h1 onClick={handleClick} className='text-white cursor-pointer text-3xl font-semibold ml-5 '>MediCare </h1>
             </div>
             <div className="rightnav mr-10 flex gap-11 ">
                 {!hospital && !admin?<>
-               <Link className='font-thin hover:underline' to={'/hospitals'}>Hospitals</Link>
+               <Link className='font-normal hover:underline' to={'/hospitals'}>Hospitals</Link>
                 </>
                 :
                 <>
@@ -47,15 +47,15 @@ function Navbar() {
                 </>}
                 {/* {hospital?<Link to={'/hospitalappoinments'}>Appointments</Link>:<></>} */}
                {user || hospital?<>
-               <Link className='font-thin hover:underline' to={user?"/appointments":'/hospitalappoinments'}>Appointments</Link>
-                <button onClick={handleLogout} className='bg-red-500 font-thin px-1 h-8 rounded-md text-lg hover:bg-red-600'>Logout</button>
+               <Link className='font-normal hover:underline' to={user?"/appointments":'/hospitalappoinments'}>Appointments</Link>
+                <button onClick={handleLogout} className='bg-red-500 font-normal px-1 h-8 rounded-md text-lg hover:bg-red-600'>Logout</button>
                </>:
                <>
                {!admin?<>
                
-               <Link className='font-thin hover:underline' to={'/login'}>Login</Link>
-               <Link className='font-thin hover:underline' to={'/signup'}>Signup</Link>
-               <Link className='font-thin hover:underline' to={'/loginhospital'}>For Hospital</Link>
+               <Link className='font-normal hover:underline' to={'/login'}>Login</Link>
+               <Link className='font-normal hover:underline' to={'/signup'}>Signup</Link>
+               <Link className='font-normal hover:underline' to={'/loginhospital'}>For Hospital</Link>
                </>:
                <>
                 <Link className='font-thin hover:underline' to={'/dashboard'} >Dashboard</Link>

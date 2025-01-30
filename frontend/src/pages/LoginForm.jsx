@@ -48,7 +48,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex justify-center items-center " style={{ height: "calc(100vh - 60px)" }}>
+    <div className="flex justify-center items-center bg-gray-200" style={{ height: "calc(100vh - 60px)" }}>
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md w-80">
         <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
         <div className="mb-4">

@@ -4,6 +4,8 @@ const mongoose = require("mongoose")
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken')
 
+// To create an admin node .\scripts\createAdmin
+
 dotenv.config();
 
 mongoose.connect(process.env.URI).then(() => {
