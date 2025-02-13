@@ -6,6 +6,7 @@ const userRoute = require("./routes/userRoute")
 const hospitalRoute = require("./routes/hospitalRoute")
 const appointmentRoute = require("./routes/appoinmentRoute")
 const adminRoute = require("./routes/adminRoute")
+const insuranceRoute = require("./routes/insuranceRoute")
 
 const app = express()
 dotenv.config();
@@ -19,6 +20,8 @@ app.use("/api/user",userRoute);
 app.use("/api/hospital",hospitalRoute);
 app.use("/api/appointment",appointmentRoute)
 app.use("/api/admin",adminRoute)
+
+app.use("/api/insurance",insuranceRoute);
 
 
 mongoose.connect(process.env.URI).
