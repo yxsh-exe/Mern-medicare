@@ -4,7 +4,7 @@ import InsuranceCard from '../components/InsuranceCard'
 const Insurance = () => {
   return (
     <>
-    <div className='px-20 py-4 gap-12 flex flex-wrap '>
+    <div className='px-20 py-4 gap-12 flex flex-wrap bg-slate-600'>
 
         <InsuranceCard/>
         <InsuranceCard/>
