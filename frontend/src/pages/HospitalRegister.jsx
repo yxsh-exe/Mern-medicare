@@ -1,131 +1,203 @@
-import React from 'react'
-import { useState } from 'react';
+import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { Building2, Mail, Lock, MapPin, ArrowLeft } from 'lucide-react';
 
 function HospitalRegister() {
-
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [city, setCity] = useState('')
-  const navigate = useNavigate()
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    city: '',
+  });
+  const [loading, setLoading] = useState(false);
+  
+  const navigate = useNavigate();
 
   const admin = JSON.parse(localStorage.getItem('admin'));
-//   const hospitalEmail = hospital?.email;
   const token = admin?.token;
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [id]: value
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     
-    // Handle login logic here (e.g., API call)
-    // console.log('Fullname', fullname)
-    // console.log('Email:', email);
-    // console.log('Password:', password);
-
-    const trimmedName = name.trim();
-    const trimmedEmail = email.trim();
-    const trimmedPassword = password.trim();
-    const trimmedCity = city.trim();
-
-    // Validate input to ensure no empty strings after trimming
-    if (!trimmedName || !trimmedEmail || !trimmedPassword || !trimmedCity) {
+    const { name, email, password, city } = formData;
+    
+    // Trim all values
+    const trimmedValues = Object.entries(formData).map(([key, value]) => [key, value.trim()]);
+    const hasEmptyFields = trimmedValues.some(([_, value]) => !value);
+    
+    if (hasEmptyFields) {
       toast.error('Please fill in all fields without leading or trailing spaces.');
+      setLoading(false);
       return;
     }
 
-    const response = await fetch('http://localhost:3000/api/admin/signuphospital', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization':`Bearer ${token}`
-      },
-      body: JSON.stringify({ name, email, password, city }),
-    });
+    try {
+      const response = await fetch('http://localhost:3000/api/admin/signuphospital', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ name, email, password, city }),
+      });
 
-    const json = await response.json();
-    if (response.ok) {
-      // Handle successful login
-    //   console.log('Login successful:', json);
-      toast.success('Successfully created new Hospital!');
-      setEmail('')
-      setPassword('')
-      setName('')
-      setCity('')
-      navigate('/dashboard')
-    } else {
-      // Handle login error
-    //   console.error('Login error:', json.msg);
-      toast.error(json.msg);
+      const json = await response.json();
+      
+      if (response.ok) {
+        toast.success('Hospital successfully registered!');
+        setFormData({
+          name: '',
+          email: '',
+          password: '',
+          city: '',
+        });
+        navigate('/dashboard');
+      } else {
+        toast.error(json.msg || 'Registration failed');
+      }
+    } catch (error) {
+      toast.error('Network error. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
+  const goBack = () => {
+    navigate('/dashboard');
+  };
 
   return (
-    <div className="flex justify-center items-center " style={{ height: "calc(100vh - 60px)" }}>
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md w-80">
-      <h2 className="text-2xl font-semibold mb-4 text-center">Signup Hospital</h2>
-      <div className="mb-4">
-        <label htmlFor="fullname" className="block text-gray-700 mb-2">
-          Name:
-        </label>
-        <input
-          type="text"
-          id="text"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md mx-auto">
+        <button 
+          onClick={goBack}
+          className="mb-6 flex items-center text-blue-600 hover:text-blue-800"
+        >
+          <ArrowLeft className="h-4 w-4 mr-1" />
+          Back to Dashboard
+        </button>
+        
+        <div className="bg-white shadow rounded-lg overflow-hidden">
+          <div className="px-4 py-5 sm:p-6">
+            <div className="text-center mb-6">
+              <Building2 className="mx-auto h-12 w-12 text-blue-500" />
+              <h2 className="mt-2 text-2xl font-bold text-gray-900">Register New Hospital</h2>
+              <p className="mt-1 text-sm text-gray-500">Add a healthcare facility to the system</p>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                  Hospital Name
+                </label>
+                <div className="mt-1 relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Building2 className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    id="name"
+                    className="pl-10 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="General Hospital"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                  Email Address
+                </label>
+                <div className="mt-1 relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="email"
+                    id="email"
+                    className="pl-10 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="hospital@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  Password
+                </label>
+                <div className="mt-1 relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="password"
+                    id="password"
+                    className="pl-10 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <p className="mt-1 text-xs text-gray-500">Password must be secure and memorable.</p>
+              </div>
+              
+              <div>
+                <label htmlFor="city" className="block text-sm font-medium text-gray-700">
+                  City
+                </label>
+                <div className="mt-1 relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <MapPin className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    id="city"
+                    className="pl-10 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="New York"
+                    value={formData.city}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <button
+                  type="submit"
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  disabled={loading}
+                >
+                  {loading ? 'Registering...' : 'Register Hospital'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-500">
+            All hospitals must comply with regulatory requirements and data privacy standards.
+          </p>
+        </div>
       </div>
-      <div className="mb-4">
-        <label htmlFor="email" className="block text-gray-700 mb-2">
-          Email:
-        </label>
-        <input
-          type="email"
-          id="email"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div className="mb-6">
-        <label htmlFor="password" className="block text-gray-700 mb-2">
-          Password:
-        </label>
-        <input
-          type="password"
-          id="password"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <div className="mb-6">
-        <label htmlFor="password" className="block text-gray-700 mb-2">
-          City:
-        </label>
-        <input
-          type="text"
-          id="citytext"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          required
-        />
-      </div>
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300"
-      >
-        Signup Hospital
-      </button>
-    </form>
-  </div>
-  )
+    </div>
+  );
 }
 
-export default HospitalRegister
+export default HospitalRegister;
