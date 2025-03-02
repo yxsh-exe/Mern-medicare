@@ -8,7 +8,6 @@ const insuranceCompanySchema = new mongoose.Schema({
     email:{
         type:String,
         required:true,
-        unique:true
     },
     address:{
         type:String,
@@ -16,7 +15,6 @@ const insuranceCompanySchema = new mongoose.Schema({
     },
     contact:{
         type:Number,
-        unique:true,
         required:true
     },
     information:{

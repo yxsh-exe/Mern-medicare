@@ -22,12 +22,9 @@ function AdminLogin() {
     });
 
     const json = await response.json();
-<<<<<<< Updated upstream
 
-=======
     console.log(json.token);
     localStorage.setItem('token',json.token);
->>>>>>> Stashed changes
     if (response.ok) {
       toast.success('Successfully logged in!');
       localStorage.setItem('admin', JSON.stringify(json));
