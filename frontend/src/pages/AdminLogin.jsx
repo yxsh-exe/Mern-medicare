@@ -25,13 +25,16 @@ function AdminLogin() {
       },
       body: JSON.stringify({ email, password }),
     });
+    
 
     const json = await response.json();
+    console.log(json.token);
     if (response.ok) {
       // Handle successful login
     //   console.log('Login successful:', json);
       toast.success('Successfully loggedin!');
       localStorage.setItem("admin",JSON.stringify(json));
+      localStorage.setItem('token', json.token)
       dispatch({type:'LOGIN',payload:json})
       setEmail('')
       setPassword('')
