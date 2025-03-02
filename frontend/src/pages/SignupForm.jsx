@@ -1,119 +1,147 @@
-import React from 'react'
-import { useState } from 'react';
-import toast from 'react-hot-toast';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
+import toast from 'react-hot-toast';
+import { FaUser, FaLock, FaEnvelope, FaUserCircle, FaUserPlus } from 'react-icons/fa';
 
 function SignupForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [fullname, setFullname] = useState('')
-  const navigate = useNavigate()
-  const {dispatch} = useAuthContext()
+  const [username, setUsername] = useState('');
+  const navigate = useNavigate();
+  const { dispatch } = useAuthContext();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Handle login logic here (e.g., API call)
-    // console.log('Fullname', fullname)
-    // console.log('Email:', email);
-    // console.log('Password:', password);
-
-    const trimmedFullname = fullname.trim();
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
+    const trimmedUsername = username.trim();
 
-    // Validate input to ensure no empty strings after trimming
-    if (!trimmedFullname || !trimmedEmail || !trimmedPassword) {
+    if (!trimmedEmail || !trimmedPassword || !trimmedUsername) {
       toast.error('Please fill in all fields without leading or trailing spaces.');
       return;
     }
 
-    const response = await fetch('http://localhost:3000/api/user/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // 'Authorization':`Bearer ${user.token}`
-      },
-      body: JSON.stringify({ fullname, email, password }),
-    });
+    try {
+      const response = await fetch('http://localhost:3000/api/user/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          username, 
+          email, 
+          password
+        }),
+      });
 
-    const json = await response.json();
-    if (response.ok) {
-      // Handle successful login
-    //   console.log('Login successful:', json);
-      toast.success('Successfully signedup!');
-      localStorage.setItem("user",JSON.stringify(json));
-      dispatch({type:'LOGIN',payload:json})
-      setEmail('')
-      setPassword('')
-      setFullname('')
-      navigate('/')
-    } else {
-      // Handle login error
-    //   console.error('Login error:', json.msg);
-      toast.error(json.msg);
+      const json = await response.json();
+      
+      if (response.ok) {
+        toast.success('Registration successful! Welcome to our user portal.');
+        localStorage.setItem("user", JSON.stringify(json));
+        dispatch({type: 'LOGIN', payload: json});
+        setEmail('');
+        setPassword('');
+        setUsername('');
+        navigate('/');
+      } else {
+        toast.error(json.msg || 'Registration failed. Please try again.');
+      }
+    } catch (error) {
+      toast.error('Connection error. Please check your internet and try again.');
     }
   };
 
-  const handleClick = (e)=>{
+  const handleLogin = (e) => {
     e.preventDefault();
-    navigate("/login")
-  }
+    navigate("/login");
+  };
 
   return (
-    <div className="flex justify-center items-center " style={{ height: "calc(100vh - 60px)" }}>
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md w-80">
-      <h2 className="text-2xl font-semibold mb-4 text-center">Signup</h2>
-      <div className="mb-4">
-        <label htmlFor="fullname" className="block text-gray-700 mb-2">
-          Fullname:
-        </label>
-        <input
-          type="text"
-          id="text"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-          value={fullname}
-          onChange={(e) => setFullname(e.target.value)}
-          required
-        />
+    <div className="flex justify-center items-center bg-blue-50" style={{ height: "calc(100vh - 60px)" }}>
+      <div className="bg-white p-8 rounded-xl shadow-lg w-96 border-t-4 border-blue-600">
+        <div className="flex items-center justify-center mb-6">
+          <FaUserCircle className="w-8 h-8 text-blue-600 mr-2" />
+          <h2 className="text-2xl font-semibold text-gray-800">User Portal</h2>
+        </div>
+        
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4 relative">
+            <label htmlFor="username" className="flex items-center text-gray-700 mb-2 font-medium">
+              <FaUser className="mr-2 text-blue-500" />
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all duration-200"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="johndoe"
+              required
+            />
+          </div>
+          
+          <div className="mb-4 relative">
+            <label htmlFor="email" className="flex items-center text-gray-700 mb-2 font-medium">
+              <FaEnvelope className="mr-2 text-blue-500" />
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all duration-200"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your.email@example.com"
+              required
+            />
+          </div>
+          
+          <div className="mb-6 relative">
+            <label htmlFor="password" className="flex items-center text-gray-700 mb-2 font-medium">
+              <FaLock className="mr-2 text-blue-500" />
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all duration-200"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Choose a secure password"
+              required
+            />
+            <p className="text-xs text-gray-500 mt-2">
+              Must be at least 8 characters long with a mix of letters, numbers, and symbols.
+            </p>
+          </div>
+          
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all duration-200 flex items-center justify-center"
+          >
+            <FaUserPlus className="mr-2" />
+            Create Account
+          </button>
+          
+          <div className="mt-4 text-center border-t pt-4">
+            <p className="text-sm text-gray-600">
+              Already have an account?{' '}
+              <span
+                onClick={handleLogin}
+                className="text-blue-600 font-medium cursor-pointer hover:underline"
+              >
+                Sign in
+              </span>
+            </p>
+          </div>
+        </form>
       </div>
-      <div className="mb-4">
-        <label htmlFor="email" className="block text-gray-700 mb-2">
-          Email:
-        </label>
-        <input
-          type="email"
-          id="email"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div className="mb-6">
-        <label htmlFor="password" className="block text-gray-700 mb-2">
-          Password:
-        </label>
-        <input
-          type="password"
-          id="password"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300"
-      >
-        Signup
-      </button>
-      <p className='text-sm mt-4'>Already a user ? <span onClick={handleClick} className=' ml-1 cursor-pointer text-blue-500 hover:underline'>Login</span></p>
-    </form>
-  </div>
-  )
+    </div>
+  );
 }
 
-export default SignupForm
+export default SignupForm;
