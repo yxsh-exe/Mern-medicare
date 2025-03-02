@@ -16,6 +16,7 @@ import HospitalRegister from "./pages/HospitalRegister";
 import HospitalList from "./pages/HospitalList";
 import { useAdminAuthContext } from "./hooks/useAdminAuthContext";
 import Insurance from "./pages/Insurance";
+import InsuranceSignup from "./pages/InsuranceSignup";
 
 
 function App() {
@@ -53,6 +54,8 @@ function App() {
       <Route path="/registerhospital" element={admin?<HospitalRegister/>:<Home/>}/>
 
       <Route path="/allhospitals" element={admin?<HospitalList/>:<Home/>}/>
+
+      <Route path="/register-insurance" element={<InsuranceSignup/>}/>
 
 
      </Routes>
